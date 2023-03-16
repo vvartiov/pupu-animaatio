@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Flower on Mountain Meadow with Bunny</title>
+</head>
+<body>
+  <svg width="400" height="300" xmlns="http://www.w3.org/2000/svg">
+    <!-- Mountain -->
+    <path d="M0,150 L200,50 L400,150" fill="lightgray" stroke="gray" stroke-width="2" />
+    <!-- Meadow -->
+    <rect x="0" y="150" width="400" height="150" fill="lightgreen" />
+    <!-- Flower stem -->
+    <line x1="200" y1="180" x2="200" y2="100" stroke="darkgreen" stroke-width="2" />
+    <!-- Flower center -->
+    <circle cx="200" cy="100" r="10" fill="yellow" stroke="black" stroke-width="1" />
+    <!-- Flower petals -->
+    <circle cx="190" cy="90" r="7" fill="red" stroke="black" stroke-width="1" />
+    <circle cx="210" cy="90" r="7" fill="red" stroke="black" stroke-width="1" />
+    <circle cx="190" cy="110" r="7" fill="red" stroke="black" stroke-width="1" />
+    <circle cx="210" cy="110" r="7" fill="red" stroke="black" stroke-width="1" />
+    <!-- Bunny body -->
+    <ellipse cx="130" cy="190" rx="30" ry="25" fill="white" stroke="black" stroke-width="1" />
+    <!-- Bunny head -->
+    <circle cx="110" cy="160" r="20" fill="white" stroke="black" stroke-width="1" />
+	<!-- Bunny ears -->
+	<line id="ear-left" x1="100" y1="140" x2="90" y2="120" stroke="black" stroke-width="2" />
+	<line id="ear-right" x1="120" y1="140" x2="130" y2="120" stroke="black" stroke-width="2" />
+    <!-- Bunny eyes -->
+    <circle cx="104" cy="155" r="2" fill="black" />
+    <circle cx="116" cy="155" r="2" fill="black" />
+    <!-- Bunny nose -->
+    <circle cx="110" cy="163" r="1" fill="black" />
+  </svg>
+	<script>
+	  function getRandomInt(min, max) {
+		return Math.floor(Math.random() * (max - min + 1)) + min;
+	  }
+
+	  function moveEarsRandomly() {
+		const earLeft = document.getElementById("ear-left");
+		const earRight = document.getElementById("ear-right");
+
+		const leftEarMovement = getRandomInt(-5, 5);
+		const rightEarMovement = getRandomInt(-5, 5);
+
+		earLeft.setAttribute("y2", 120 + leftEarMovement);
+		earRight.setAttribute("y2", 120 + rightEarMovement);
+
+		setTimeout(moveEarsRandomly, getRandomInt(500, 2000));
+	  }
+
+	  document.addEventListener("DOMContentLoaded", moveEarsRandomly);
+	</script>
+</body>
+</html>
