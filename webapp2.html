@@ -1,0 +1,62 @@
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feather nRF52840 UART Web App</title>
+    <script>
+        const UART_SERVICE_UUID = "6e400001-b5a3-f393-e0a9-e50e24dcca9e";
+        const UART_RX_CHAR_UUID = "6e400002-b5a3-f393-e0a9-e50e24dcca9e";
+        const UART_TX_CHAR_UUID = "6e400003-b5a3-f393-e0a9-e50e24dcca9e";
+        let uartTxCharacteristic;
+
+        async function onConnectButtonClick() {
+            try {
+                const device = await navigator.bluetooth.requestDevice({
+                    filters: [
+                        { services: [UART_SERVICE_UUID] }
+                    ]
+                });
+
+                const server = await device.gatt.connect();
+                const service = await server.getPrimaryService(UART_SERVICE_UUID);
+                uartTxCharacteristic = await service.getCharacteristic(UART_TX_CHAR_UUID);
+                const uartRxCharacteristic = await service.getCharacteristic(UART_RX_CHAR_UUID);
+
+                // Enable notifications
+                await uartRxCharacteristic.startNotifications();
+                uartRxCharacteristic.addEventListener('characteristicvaluechanged', onDataReceived);
+                console.log("Connected to Feather nRF52840");
+            } catch (error) {
+                console.error("Error:", error);
+            }
+        }
+
+        function onDataReceived(event) {
+            const data = new TextDecoder().decode(event.target.value);
+            console.log("Received:", data);
+        }
+
+        async function onSendButtonClick() {
+            const message = document.querySelector("#messageInput").value;
+            await sendMessage(message);
+        }
+
+        async function sendMessage(message) {
+            if (uartTxCharacteristic) {
+                const data = new TextEncoder().encode(message);
+                await uartTxCharacteristic.writeValue(data);
+            } else {
+                console.error("UART Tx Characteristic not found");
+            }
+        }
+    </script>
+</head>
+<body>
+    <h1>Feather nRF52840 UART Web App</h1>
+    <button onclick="onConnectButtonClick()">Connect</button>
+    <br><br>
+    <input type="text" id="messageInput" placeholder="Enter message">
+    <button onclick="onSendButtonClick()">Send</button>
+</body>
+</html>
